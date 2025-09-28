@@ -25,7 +25,37 @@ struct Vehicle {
 };
 typedef struct Vehicle vehicle_t;
 
+person_t person[LIST_SIZE] = 
+{
+    {"Nils-Olov Olsson", 24}, 
+    {"Samuel Grafström", 23},
+    {"3", 23},
+    {"4", 23},
+    {"5", 23},
+    {"6", 23},
+    {"7", 23},
+    {"8", 23},
+    {"9", 23},
+    {"10", 23},
+};
+vehicle_t car[LIST_SIZE];
+
 // Functions
+
+// Temporary hard coded list of cars, will change later
+void init_cars()
+{
+    car[0] = (vehicle_t){"307 CC", "Peugeot", "WUD786", person[0]};
+    car[1] = (vehicle_t){"A3", "Audi", "ATO717", person[1]};
+    car[2] = (vehicle_t){"307 CC", "BMW", "3", person[2]};
+    car[3] = (vehicle_t){"307 CC", "BMW", "4", person[3]};
+    car[4] = (vehicle_t){"307 CC", "BMW", "5", person[4]};
+    car[5] = (vehicle_t){"307 CC", "BMW", "6", person[5]};
+    car[6] = (vehicle_t){"307 CC", "BMW", "7", person[6]};
+    car[7] = (vehicle_t){"307 CC", "BMW", "8", person[7]};
+    car[8] = (vehicle_t){"307 CC", "BMW", "9", person[8]};
+    car[9] = (vehicle_t){"307 CC", "BMW", "10", person[9]};
+}
 
 void print_menu()
 {
@@ -41,7 +71,7 @@ void print_menu()
     printf("-----------------------------\n");
 }
 
-int add_vehicle()
+void add_vehicle()
 {
     int bla;
     printf("Add vehicle\n"); 
@@ -49,45 +79,29 @@ int add_vehicle()
     printf("%i is now registered!\n", bla);
 }
 
-int info()
+void info()
 {
     printf("You choose info about vehicle\n");
     printf("Please enter number to show vehicle in responding place\n");
     int input;
     scanf("%i", &input);
 
-    person_t person[LIST_SIZE] = 
-    {
-        {"Nils-Olov Olsson", 24}, 
-        {"Samuel Grafström", 23},
-        {"3", 23},
-        {"4", 23},
-        {"5", 23},
-        {"6", 23},
-        {"7", 23},
-        {"8", 23},
-        {"9", 23},
-        {"10", 23},
-    };
-    vehicle_t car[LIST_SIZE] = 
-    {
-        {"307 CC", "Peugeot", "WUD786", person[input-1]},
-        {"A3", "Audi", "ATO717", person[input-1]},
-        {"307 CC", "BMW", "3", person[input-1]},
-        {"307 CC", "Volvo", "4", person[input-1]},
-        {"307 CC", "Mercedes", "5", person[input-1]},
-        {"307 CC", "Volkswagen", "6", person[input-1]},
-        {"307 CC", "Kia", "7", person[input-1]},
-        {"307 CC", "Mazda", "8", person[input-1]},
-        {"307 CC", "Tesla", "9", person[input-1]},
-        {"307 CC", "Fiat", "10", person[input-1]},
-    };
-
     printf("Info about vehicle on position %i:\n", input);
     printf("Type: %s\n", car[input-1].type);
     printf("Brand: %s\n", car[input-1].brand);
     printf("License plate: %s\n", car[input-1].license_plate);
     printf("Owner: %s\n", car[input-1].owner.name);
+}
+
+// Shows the whole registry
+void show_all()
+{
+    int i;
+    printf("Showing entire registry:\n");
+    for(i = 0; i < LIST_SIZE; i++)
+    {
+        printf("%i. %s | %s | %s | %s\n", i+1, car[i].type, car[i].brand, car[i].license_plate, car[i].owner.name);
+    }
 }
 
 int handle_user_input()
@@ -108,17 +122,15 @@ void act_upon_input(int choice)
 {
     switch(choice)
     {
-        case 1: 
-            add_vehicle();
+        case 1: add_vehicle();
         break;
         case 2: printf("Remove vehicle\n");
         break;
         case 3: printf("Sort\n");
         break;
-        case 4: 
-            info();
+        case 4: info();
         break;
-        case 5: printf("Show all\n");
+        case 5: show_all();
         break;
         case 6: printf("Add random\n");
         break;
@@ -136,6 +148,7 @@ void act_upon_input(int choice)
 
 int main()
 {
+    init_cars();
     int input;
 
     do{
