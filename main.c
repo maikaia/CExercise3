@@ -1,8 +1,8 @@
-// Nils-Olov Olsson & Samuel Grafström
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "types.h" // structures
 
 // Constants
 
@@ -10,20 +10,6 @@
 #define LIST_SIZE 10
 
 // Structures
-
-struct Person {
-    char name[SIZE];
-    int age;
-};
-typedef struct Person person_t;
-
-struct Vehicle {
-    char type[SIZE];
-    char brand[SIZE];
-    char license_plate[SIZE];
-    person_t owner;
-};
-typedef struct Vehicle vehicle_t;
 
 person_t person[LIST_SIZE] = 
 {
@@ -47,14 +33,14 @@ void init_cars()
 {
     car[0] = (vehicle_t){"307 CC", "Peugeot", "WUD786", person[0]};
     car[1] = (vehicle_t){"A3", "Audi", "ATO717", person[1]};
-    car[2] = (vehicle_t){"307 CC", "BMW", "3", person[2]};
-    car[3] = (vehicle_t){"307 CC", "BMW", "4", person[3]};
-    car[4] = (vehicle_t){"307 CC", "BMW", "5", person[4]};
-    car[5] = (vehicle_t){"307 CC", "BMW", "6", person[5]};
-    car[6] = (vehicle_t){"307 CC", "BMW", "7", person[6]};
-    car[7] = (vehicle_t){"307 CC", "BMW", "8", person[7]};
-    car[8] = (vehicle_t){"307 CC", "BMW", "9", person[8]};
-    car[9] = (vehicle_t){"307 CC", "BMW", "10", person[9]};
+    car[2] = (vehicle_t){"307 CC", "BMW", "reg3", person[2]};
+    car[3] = (vehicle_t){"307 CC", "Volvo", "reg4", person[3]};
+    car[4] = (vehicle_t){"307 CC", "Mercedes", "reg5", person[4]};
+    car[5] = (vehicle_t){"307 CC", "Kia", "reg6", person[5]};
+    car[6] = (vehicle_t){"307 CC", "Fiat", "reg7", person[6]};
+    car[7] = (vehicle_t){"307 CC", "Mazda", "reg8", person[7]};
+    car[8] = (vehicle_t){"307 CC", "Tesla", "reg9", person[8]};
+    car[9] = (vehicle_t){"307 CC", "Nissan", "1reg0", person[9]};
 }
 
 void print_menu()
@@ -86,11 +72,17 @@ void info()
     int input;
     scanf("%i", &input);
 
-    printf("Info about vehicle on position %i:\n", input);
-    printf("Type: %s\n", car[input-1].type);
-    printf("Brand: %s\n", car[input-1].brand);
-    printf("License plate: %s\n", car[input-1].license_plate);
-    printf("Owner: %s\n", car[input-1].owner.name);
+    if (input > 0 && input <= LIST_SIZE)
+    {
+        printf("Info about vehicle on position %i:\n", input);
+        printf("Type: %s\n", car[input-1].type);
+        printf("Brand: %s\n", car[input-1].brand);
+        printf("License plate: %s\n", car[input-1].license_plate);
+        printf("Owner: %s\n", car[input-1].owner.name);
+    } else {
+        printf("Please enter a number between 1 & 10\n");
+        info();
+    }
 }
 
 // Shows the whole registry
