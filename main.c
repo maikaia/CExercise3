@@ -2,8 +2,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "types.h" // structures
-#include "file.c"
+#include "types.h" 
+#include "file.c" // load/save registry
 
 // Functions
 
@@ -29,6 +29,7 @@ void add_vehicle()
     printf("%i is now registered!\n", bla);
 }
 
+// Shows information about one vehicle
 void info(vehicle_t registry[], int count)
 {
     printf("You choose info about vehicle\n");
@@ -60,6 +61,7 @@ void show_all(vehicle_t registry[LIST_SIZE], int count)
     }
 }
 
+// Safe input
 int handle_user_input()
 {
     char buffer[SIZE];
@@ -78,34 +80,23 @@ void act_upon_input(int choice, vehicle_t registry[LIST_SIZE], int count)
 {
     switch(choice)
     {
-        case 1: add_vehicle();
-        break;
-        case 2: printf("Remove vehicle\n");
-        break;
-        case 3: printf("Sort\n");
-        break;
-        case 4: info(registry, count);
-        break;
-        case 5: show_all(registry, count);
-        break;
-        case 6: printf("Add random\n");
-        break;
-        case 7: printf("Searh\n");
-        break;
-        case 0: printf("Exiting program!\n");
-        break;
-        default: printf("Not a valid input, try using a number you see on the menu\n");
-        break;
+        case 1: add_vehicle(); break;
+        case 2: printf("Remove vehicle\n"); break;
+        case 3: printf("Sort\n"); break;
+        case 4: info(registry, count); break;
+        case 5: show_all(registry, count); break;
+        case 6: printf("Add random\n"); break;
+        case 7: printf("Searh\n"); break;
+        case 0: printf("Exiting program!\n"); break;
+        default: printf("Not a valid input, try using a number you see on the menu\n"); break;
     }
 }
-
 
 // Main
 
 int main()
 {
-    vehicle_t registry[LIST_SIZE]; //storage
-    init_cars();
+    vehicle_t registry[LIST_SIZE]; //storage of registry
     int input, count = 0;
 
     load_registry("registry.txt", registry, &count);
