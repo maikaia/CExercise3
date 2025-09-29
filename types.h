@@ -4,16 +4,16 @@
 #define LIST_SIZE 10
 #define SIZE 100   // for strings
 
-typedef struct {
+struct Person {
     char name[SIZE];
     int age;
-} person_t;
+}; typedef struct Person person_t;
 
-typedef struct {
+struct Vehicle {
     char type[SIZE];
     char brand[SIZE];
     char license_plate[SIZE];
     person_t owner;
-} vehicle_t;
+}; typedef struct Vehicle vehicle_t;
 
 #endif

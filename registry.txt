@@ -1,0 +1,5 @@
+4
+Volvo|V60|ABC123|Alice Johnson|34
+Audi|A3|XYZ999|Bob Smith|45
+Peugeot|307 CC|WUD786|Nils-Olov Olsson|24
+Audi|A4|ATO717|Samuel Grafström|23

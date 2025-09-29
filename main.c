@@ -3,45 +3,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "types.h" // structures
-
-// Constants
-
-#define SIZE 100
-#define LIST_SIZE 10
-
-// Structures
-
-person_t person[LIST_SIZE] = 
-{
-    {"Nils-Olov Olsson", 24}, 
-    {"Samuel Grafström", 23},
-    {"3", 23},
-    {"4", 23},
-    {"5", 23},
-    {"6", 23},
-    {"7", 23},
-    {"8", 23},
-    {"9", 23},
-    {"10", 23},
-};
-vehicle_t car[LIST_SIZE];
+#include "file.c"
 
 // Functions
-
-// Temporary hard coded list of cars, will change later
-void init_cars()
-{
-    car[0] = (vehicle_t){"307 CC", "Peugeot", "WUD786", person[0]};
-    car[1] = (vehicle_t){"A3", "Audi", "ATO717", person[1]};
-    car[2] = (vehicle_t){"307 CC", "BMW", "reg3", person[2]};
-    car[3] = (vehicle_t){"307 CC", "Volvo", "reg4", person[3]};
-    car[4] = (vehicle_t){"307 CC", "Mercedes", "reg5", person[4]};
-    car[5] = (vehicle_t){"307 CC", "Kia", "reg6", person[5]};
-    car[6] = (vehicle_t){"307 CC", "Fiat", "reg7", person[6]};
-    car[7] = (vehicle_t){"307 CC", "Mazda", "reg8", person[7]};
-    car[8] = (vehicle_t){"307 CC", "Tesla", "reg9", person[8]};
-    car[9] = (vehicle_t){"307 CC", "Nissan", "1reg0", person[9]};
-}
 
 void print_menu()
 {
@@ -65,34 +29,34 @@ void add_vehicle()
     printf("%i is now registered!\n", bla);
 }
 
-void info()
+void info(vehicle_t registry[], int count)
 {
     printf("You choose info about vehicle\n");
-    printf("Please enter number to show vehicle in responding place\n");
+    printf("Please enter number between 1-%i to show vehicle in responding place\n", count);
     int input;
     scanf("%i", &input);
 
-    if (input > 0 && input <= LIST_SIZE)
+    if (input > 0 && input <= count)
     {
         printf("Info about vehicle on position %i:\n", input);
-        printf("Type: %s\n", car[input-1].type);
-        printf("Brand: %s\n", car[input-1].brand);
-        printf("License plate: %s\n", car[input-1].license_plate);
-        printf("Owner: %s\n", car[input-1].owner.name);
+        printf("Type: %s\n", registry[input-1].type);
+        printf("Brand: %s\n", registry[input-1].brand);
+        printf("License plate: %s\n", registry[input-1].license_plate);
+        printf("Owner: %s\n", registry[input-1].owner.name);
     } else {
-        printf("Please enter a number between 1 & 10\n");
-        info();
+        printf("Please enter a number between 1 & %i\n", count);
+        info(registry, count);
     }
 }
 
 // Shows the whole registry
-void show_all()
+void show_all(vehicle_t registry[LIST_SIZE], int count)
 {
     int i;
     printf("Showing entire registry:\n");
-    for(i = 0; i < LIST_SIZE; i++)
+    for(i = 0; i < count; i++)
     {
-        printf("%i. %s | %s | %s | %s\n", i+1, car[i].type, car[i].brand, car[i].license_plate, car[i].owner.name);
+        printf("%i. %s | %s | %s | %s \n", i+1, registry[i].brand, registry[i].type, registry[i].license_plate, registry[i].owner.name);
     }
 }
 
@@ -110,7 +74,7 @@ int handle_user_input()
     return temp;
 }
 
-void act_upon_input(int choice)
+void act_upon_input(int choice, vehicle_t registry[LIST_SIZE], int count)
 {
     switch(choice)
     {
@@ -120,9 +84,9 @@ void act_upon_input(int choice)
         break;
         case 3: printf("Sort\n");
         break;
-        case 4: info();
+        case 4: info(registry, count);
         break;
-        case 5: show_all();
+        case 5: show_all(registry, count);
         break;
         case 6: printf("Add random\n");
         break;
@@ -140,14 +104,19 @@ void act_upon_input(int choice)
 
 int main()
 {
+    vehicle_t registry[LIST_SIZE]; //storage
     init_cars();
-    int input;
+    int input, count = 0;
+
+    load_registry("registry.txt", registry, &count);
 
     do{
         print_menu();
         input = handle_user_input();
-        act_upon_input(input);
+        act_upon_input(input, registry, count);
     } while(input !=0 );
+
+    save_registry("registry.txt", registry, count);
 
     return 0;
 }
