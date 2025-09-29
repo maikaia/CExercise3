@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "types.h" 
-#include "file.c" // load/save registry
+#include "file.h" // load/save registry
 
 // Functions
 
@@ -21,12 +21,91 @@ void print_menu()
     printf("-----------------------------\n");
 }
 
-void add_vehicle()
+void input_string(const char *prompt, char *dest, size_t size){
+    printf("%s", prompt);
+    fgets(dest, size, stdin);
+    strtok(dest, "\n");
+}
+
+void add_vehicle(vehicle_t registry[], int *count)
 {
-    int bla;
-    printf("Add vehicle\n"); 
-    scanf("%i", &bla);
-    printf("%i is now registered!\n", bla);
+    if(*count >= LIST_SIZE){
+        printf("Registry is full\n");
+    } else {
+        char buffer[SIZE];
+        int c;
+
+        input_string("Enter brand: ", registry[*count].brand, SIZE);
+
+        input_string("Enter type: ", registry[*count].type, SIZE);
+
+        input_string("Enter license number: ", registry[*count].license_plate, SIZE);
+
+        input_string("Enter owners name: ", registry[*count].owner.name, SIZE);
+
+        printf("Enter owners age: ");
+        fgets(buffer, SIZE, stdin); 
+        strtok(buffer, "\n");
+        registry[*count].owner.age = atoi(buffer);
+
+        (*count)++;
+        printf("Vehicle added!\n", *count);
+
+        save_registry("registry.txt", registry, *count);
+    }
+}
+
+void remove_vehicle(vehicle_t registry[], int *count){
+    if (*count == 0){
+        printf("Registry is empty!\n");
+        return;
+    }
+
+    char buffer[SIZE];
+
+    printf("Enter a number between 1-%i to remove that vehicle\n", *count);
+    fgets(buffer, SIZE, stdin);
+    int input = atoi(buffer);
+
+    if (input < 1 || input > *count) {
+        printf("Invalid position.\n");
+        return;
+    }
+
+    for (int i = input - 1; i < *count - 1; i++) {
+        registry[i] = registry[i + 1];
+    }
+
+    (*count)--;
+    printf("Vehicle at position %i is now removed\n", input);
+
+    save_registry("registry.txt", registry, *count);
+}
+
+
+// Shows the whole registry
+void show_all(vehicle_t registry[], int count)
+{
+    int i;
+    printf("Showing entire registry:\n");
+    for(i = 0; i < count; i++)
+    {
+        printf("%i. %s | %s | %s | %s | %i \n", i+1, registry[i].brand, registry[i].type, registry[i].license_plate, registry[i].owner.name, registry[i].owner.age);
+    }
+}
+
+// Safe input
+int handle_user_input()
+{
+    char buffer[SIZE];
+    fgets(buffer, SIZE, stdin);
+    if(buffer == NULL || isalpha(buffer[0])) 
+    {
+        return -1;
+    }
+    strtok(buffer, "\n"); // remove newline
+    
+    return atoi(buffer); //convert to int
 }
 
 // Shows information about one vehicle
@@ -34,8 +113,9 @@ void info(vehicle_t registry[], int count)
 {
     printf("You choose info about vehicle\n");
     printf("Please enter number between 1-%i to show vehicle in responding place\n", count);
+
     int input;
-    scanf("%i", &input);
+    input = handle_user_input();
 
     if (input > 0 && input <= count)
     {
@@ -45,46 +125,19 @@ void info(vehicle_t registry[], int count)
         printf("License plate: %s\n", registry[input-1].license_plate);
         printf("Owner: %s\n", registry[input-1].owner.name);
     } else {
-        printf("Please enter a number between 1 & %i\n", count);
-        info(registry, count);
+        printf("Invalid input, try again\n");
     }
 }
 
-// Shows the whole registry
-void show_all(vehicle_t registry[LIST_SIZE], int count)
-{
-    int i;
-    printf("Showing entire registry:\n");
-    for(i = 0; i < count; i++)
-    {
-        printf("%i. %s | %s | %s | %s \n", i+1, registry[i].brand, registry[i].type, registry[i].license_plate, registry[i].owner.name);
-    }
-}
-
-// Safe input
-int handle_user_input()
-{
-    char buffer[SIZE];
-    int temp;
-    scanf("%s", buffer);
-    if(isalpha(buffer[0]) || strlen(buffer) > 1)
-    {
-        return -1;
-    }
-    temp = atoi(buffer);
-    
-    return temp;
-}
-
-void act_upon_input(int choice, vehicle_t registry[LIST_SIZE], int count)
+void act_upon_input(int choice, vehicle_t registry[], int *count)
 {
     switch(choice)
     {
-        case 1: add_vehicle(); break;
-        case 2: printf("Remove vehicle\n"); break;
+        case 1: add_vehicle(registry, count); break;
+        case 2: remove_vehicle(registry, count); break;
         case 3: printf("Sort\n"); break;
-        case 4: info(registry, count); break;
-        case 5: show_all(registry, count); break;
+        case 4: info(registry, *count); break;
+        case 5: show_all(registry, *count); break;
         case 6: printf("Add random\n"); break;
         case 7: printf("Searh\n"); break;
         case 0: printf("Exiting program!\n"); break;
@@ -104,7 +157,7 @@ int main()
     do{
         print_menu();
         input = handle_user_input();
-        act_upon_input(input, registry, count);
+        act_upon_input(input, registry, &count);
     } while(input !=0 );
 
     save_registry("registry.txt", registry, count);
