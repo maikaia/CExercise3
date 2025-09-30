@@ -34,7 +34,6 @@ void add_vehicle(vehicle_t registry[], int *count)
         printf("Registry is full\n");
     } else {
         char buffer[SIZE];
-        int c;
 
         input_string("Enter brand: ", registry[*count].brand, SIZE);
         input_string("Enter type: ", registry[*count].type, SIZE);
@@ -191,6 +190,7 @@ void info(vehicle_t registry[], int count)
         printf("Brand: %s\n", registry[input-1].brand);
         printf("License plate: %s\n", registry[input-1].license_plate);
         printf("Owner: %s\n", registry[input-1].owner.name);
+        printf("Age: %s\n", registry[input-1].owner.age);
     } else {
         printf("Invalid input, try again\n");
     }
