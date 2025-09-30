@@ -36,11 +36,8 @@ void add_vehicle(vehicle_t registry[], int *count)
         int c;
 
         input_string("Enter brand: ", registry[*count].brand, SIZE);
-
         input_string("Enter type: ", registry[*count].type, SIZE);
-
         input_string("Enter license number: ", registry[*count].license_plate, SIZE);
-
         input_string("Enter owners name: ", registry[*count].owner.name, SIZE);
 
         printf("Enter owners age: ");
@@ -55,7 +52,9 @@ void add_vehicle(vehicle_t registry[], int *count)
     }
 }
 
+// Removes one vehicle which user chooses
 void remove_vehicle(vehicle_t registry[], int *count){
+    // Check if registry is empty
     if (*count == 0){
         printf("Registry is empty!\n");
         return;
@@ -72,6 +71,7 @@ void remove_vehicle(vehicle_t registry[], int *count){
         return;
     }
 
+    // Removes given position
     for (int i = input - 1; i < *count - 1; i++) {
         registry[i] = registry[i + 1];
     }
