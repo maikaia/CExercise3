@@ -1,8 +1,7 @@
-7
-Volvo|V60|ABC123|Alice Johnson|34
-Audi|A3|XYZ999|Bob Smith|45
-Peugeot|307 CC|WUD786|Nils-Olov Olsson|24
-Audi|A4|ATO717|Samuel Grafström|23
-1|1|1|1|1
-h|h|h|h|0
-Koenigsegg|Supercar|123abc|Nolle|24
+6
+Kia|Luxury|GHY695|Theodor Fahami|45
+Kia|Convertible|GVQ565|Theodor Fahami|24
+Peugeot|Crossover|TWR368|Nils-Olov Olsson|27
+Fiat|Hatchback|JJD167|Johannes Schoeneck|67
+Peugeot|Convertible|HYR265|Theodor Fahami|57
+Peugeot|Hatchback|TZU371|Edward Bergström|72

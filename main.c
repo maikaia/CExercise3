@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <time.h>
 #include "types.h" 
 #include "file.h" // load/save registry
 
@@ -82,6 +83,72 @@ void remove_vehicle(vehicle_t registry[], int *count){
     save_registry("registry.txt", registry, *count);
 }
 
+// Compares 
+int compare_by_owner(const void *a, const void *b) {
+    const vehicle_t *va = (const vehicle_t *)a;
+    const vehicle_t *vb = (const vehicle_t *)b;
+    return strcmp(va->owner.name, vb->owner.name);
+}
+
+// Sort the registry by owner name
+void sort_registry(vehicle_t registry[], int count){
+    if(count <= 1){
+        printf("List is to small to sort\n");
+        return;
+    }
+
+    qsort(registry, count, sizeof(vehicle_t), compare_by_owner);
+    printf("Registry sorted by owner!\n");
+
+    save_registry("registry.txt", registry, count);
+}
+
+void add_random_vehicle(vehicle_t registry[], int *count){
+    if(*count >= LIST_SIZE){
+        printf("Registry is full\n");
+        return;
+    }
+
+    const char *brand[] = {"BMW", "Audi", "Peugeot", "Kia", "Nissan", "Mercedes", "Toyota", "Ford", "Fiat", "Porsche"};
+    const char *type[] = {"SUV", "Sedan", "Pickup truck", "Convertible", "Hatchback", "Coupe", "Minivan", "Crossover", "Luxury", "Limousine"};
+    const char *name[] = {"Nils-Olov Olsson", "Samuel Grafström", "Carl Nordenadler", "Niklas Sköld", "Edward Bergström", "Theodor Fahami", "Johannes Schoeneck", "Ingela Hedlund", "Jörgen Olsson", "Petra Olsson"};
+    const char *letter[] = {"A", "G", "F", "E", "O", "T", "N", "I", "R"};
+
+    snprintf(registry[*count].brand, SIZE, "%s", brand[rand() % 10]);
+    snprintf(registry[*count].type, SIZE, "%s", type[rand() % 10]);
+    snprintf(registry[*count].license_plate, SIZE, "%c%c%c%03d", 'A' + (rand()%26), 'A' + (rand()%26), 'A' + (rand()%26), rand() % 1000);
+    snprintf(registry[*count].owner.name, SIZE, "%s", name[rand() % 10]);
+    registry[*count].owner.age = 18 + rand() % 63; // random age 18-80
+
+    (*count)++;
+    printf("Random vehicle added!\n");
+    save_registry("registry.txt", registry, *count);
+}
+
+void search_owner(vehicle_t registry[], int count){
+    char query[SIZE];
+    input_string("Enter owner name to search: ", query, SIZE);
+
+    int found=0;
+    for (int i = 0; i < count; i++){
+        if(strcasecmp(registry[i].owner.name, query) == 0){
+            printf("%i. %s | %s | %s | %s | %i\n",
+                i+1,
+                registry[i].brand,
+                registry[i].type,
+                registry[i].license_plate,
+                registry[i].owner.name,
+                registry[i].owner.age
+            );
+            found++;
+        }
+    }
+
+    if(!found){
+        printf("No vehicles found for owner '%s'\n", query);
+    }
+}
+
 
 // Shows the whole registry
 void show_all(vehicle_t registry[], int count)
@@ -135,11 +202,11 @@ void act_upon_input(int choice, vehicle_t registry[], int *count)
     {
         case 1: add_vehicle(registry, count); break;
         case 2: remove_vehicle(registry, count); break;
-        case 3: printf("Sort\n"); break;
+        case 3: sort_registry(registry, *count); break;
         case 4: info(registry, *count); break;
         case 5: show_all(registry, *count); break;
-        case 6: printf("Add random\n"); break;
-        case 7: printf("Searh\n"); break;
+        case 6: add_random_vehicle(registry, count); break;
+        case 7: search_owner(registry, *count); break;
         case 0: printf("Exiting program!\n"); break;
         default: printf("Not a valid input, try using a number you see on the menu\n"); break;
     }
@@ -151,6 +218,8 @@ int main()
 {
     vehicle_t registry[LIST_SIZE]; //storage of registry
     int input, count = 0;
+
+    srand(time(NULL));
 
     load_registry("registry.txt", registry, &count);
 
