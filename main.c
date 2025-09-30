@@ -156,7 +156,14 @@ void show_all(vehicle_t registry[], int count)
     printf("Showing entire registry:\n");
     for(i = 0; i < count; i++)
     {
-        printf("%i. %s | %s | %s | %s | %i \n", i+1, registry[i].brand, registry[i].type, registry[i].license_plate, registry[i].owner.name, registry[i].owner.age);
+        printf("%i. %s | %s | %s | %s | %i \n", 
+            i+1, 
+            registry[i].brand, 
+            registry[i].type, 
+            registry[i].license_plate, 
+            registry[i].owner.name, 
+            registry[i].owner.age
+        );
     }
 }
 

@@ -1,7 +1,6 @@
-6
-Kia|Luxury|GHY695|Theodor Fahami|45
-Kia|Convertible|GVQ565|Theodor Fahami|24
-Peugeot|Crossover|TWR368|Nils-Olov Olsson|27
-Fiat|Hatchback|JJD167|Johannes Schoeneck|67
-Peugeot|Convertible|HYR265|Theodor Fahami|57
-Peugeot|Hatchback|TZU371|Edward Bergström|72
+5
+Ford|Limousine|RJV545|Johannes Schoeneck|51
+Ford|Coupe|FPN120|Jörgen Olsson|65
+Fiat|Convertible|DDW304|Jörgen Olsson|19
+Toyota|SUV|WJK493|Niklas Sköld|22
+Mercedes|Minivan|EDC946|Petra Olsson|72
