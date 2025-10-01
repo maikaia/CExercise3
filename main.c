@@ -4,7 +4,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include "types.h" 
+#include <string.h>    // Windows (_stricmp)
 #include "file.h" // load/save registry
+
+#ifdef _WIN32
+    #define strcasecmp _stricmp
+#endif
 
 // Functions
 
@@ -46,7 +51,7 @@ void add_vehicle(vehicle_t registry[], int *count)
         registry[*count].owner.age = atoi(buffer);
 
         (*count)++;
-        printf("Vehicle added!\n", *count);
+        printf("Vehicle added!\n");
 
         save_registry("registry.txt", registry, *count);
     }
@@ -111,7 +116,6 @@ void add_random_vehicle(vehicle_t registry[], int *count){
     const char *brand[] = {"BMW", "Audi", "Peugeot", "Kia", "Nissan", "Mercedes", "Toyota", "Ford", "Fiat", "Porsche"};
     const char *type[] = {"SUV", "Sedan", "Pickup truck", "Convertible", "Hatchback", "Coupe", "Minivan", "Crossover", "Luxury", "Limousine"};
     const char *name[] = {"Nils-Olov Olsson", "Samuel Grafström", "Carl Nordenadler", "Niklas Sköld", "Edward Bergström", "Theodor Fahami", "Johannes Schoeneck", "Ingela Hedlund", "Jörgen Olsson", "Petra Olsson"};
-    const char *letter[] = {"A", "G", "F", "E", "O", "T", "N", "I", "R"};
 
     snprintf(registry[*count].brand, SIZE, "%s", brand[rand() % 10]);
     snprintf(registry[*count].type, SIZE, "%s", type[rand() % 10]);
@@ -124,27 +128,29 @@ void add_random_vehicle(vehicle_t registry[], int *count){
     save_registry("registry.txt", registry, *count);
 }
 
-void search_owner(vehicle_t registry[], int count){
+void search_owner(vehicle_t registry[], int count) {
     char query[SIZE];
     input_string("Enter owner name to search: ", query, SIZE);
 
-    int found=0;
-    for (int i = 0; i < count; i++){
-        if(strcasecmp(registry[i].owner.name, query) == 0){
-            printf("%i. %s | %s | %s | %s | %i\n",
-                i+1,
-                registry[i].brand,
-                registry[i].type,
-                registry[i].license_plate,
-                registry[i].owner.name,
-                registry[i].owner.age
-            );
-            found++;
-        }
-    }
+    // Make sure registry is sorted before binary search
+    sort_registry(registry, count);
 
-    if(!found){
-        printf("No vehicles found for owner '%s'\n", query);
+    // Binary search using bsearch
+    vehicle_t key;
+    snprintf(key.owner.name, SIZE, "%s", query);
+
+    vehicle_t *result = bsearch(&key, registry, count, sizeof(vehicle_t), compare_by_owner);
+
+    if (result != NULL) {
+        printf("Found: %s | %s | %s | %s | %i\n",
+            result->brand,
+            result->type,
+            result->license_plate,
+            result->owner.name,
+            result->owner.age
+        );
+    } else {
+        printf("No vehicle found for owner '%s'\n", query);
     }
 }
 
@@ -172,7 +178,7 @@ int handle_user_input()
 {
     char buffer[SIZE];
     fgets(buffer, SIZE, stdin);
-    if(buffer == NULL || isalpha(buffer[0])) 
+    if(isalpha(buffer[0])) 
     {
         return -1;
     }
@@ -197,7 +203,7 @@ void info(vehicle_t registry[], int count)
         printf("Brand: %s\n", registry[input-1].brand);
         printf("License plate: %s\n", registry[input-1].license_plate);
         printf("Owner: %s\n", registry[input-1].owner.name);
-        printf("Age: %s\n", registry[input-1].owner.age);
+        printf("Age: %i\n", registry[input-1].owner.age);
     } else {
         printf("Invalid input, try again\n");
     }

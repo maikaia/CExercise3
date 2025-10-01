@@ -1,6 +1,7 @@
-5
+6
+Kia|SUV|PAX701|Ingela Hedlund|38
 Ford|Limousine|RJV545|Johannes Schoeneck|51
-Ford|Coupe|FPN120|Jörgen Olsson|65
 Fiat|Convertible|DDW304|Jörgen Olsson|19
+Ford|Coupe|FPN120|Jörgen Olsson|65
 Toyota|SUV|WJK493|Niklas Sköld|22
 Mercedes|Minivan|EDC946|Petra Olsson|72
