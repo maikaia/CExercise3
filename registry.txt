@@ -1,7 +1,8 @@
-6
+7
 Peugeot|Minivan|ESB120|Carl Nordenadler|38
 Fiat|Pickup truck|CQP315|Edward Bergström|28
 Nissan|Limousine|LNO013|Ingela Hedlund|24
-Peugeot|SUV|MTA047|Nils-Olov Olsson|67
 Ford|Minivan|JFI456|Nils-Olov Olsson|25
+Peugeot|SUV|MTA047|Nils-Olov Olsson|67
 Nissan|Hatchback|RAW284|Samuel Grafström|67
+Kia|Limousine|LFT848|Theodor Fahami|59
