@@ -1,7 +1,7 @@
 6
-Kia|SUV|PAX701|Ingela Hedlund|38
-Ford|Limousine|RJV545|Johannes Schoeneck|51
-Fiat|Convertible|DDW304|Jörgen Olsson|19
-Ford|Coupe|FPN120|Jörgen Olsson|65
-Toyota|SUV|WJK493|Niklas Sköld|22
-Mercedes|Minivan|EDC946|Petra Olsson|72
+Peugeot|Minivan|ESB120|Carl Nordenadler|38
+Fiat|Pickup truck|CQP315|Edward Bergström|28
+Nissan|Limousine|LNO013|Ingela Hedlund|24
+Peugeot|SUV|MTA047|Nils-Olov Olsson|67
+Ford|Minivan|JFI456|Nils-Olov Olsson|25
+Nissan|Hatchback|RAW284|Samuel Grafström|67

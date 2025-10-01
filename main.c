@@ -178,7 +178,7 @@ int handle_user_input()
 {
     char buffer[SIZE];
     fgets(buffer, SIZE, stdin);
-    if(isalpha(buffer[0])) 
+    if(isalpha((unsigned char) buffer[0])) 
     {
         return -1;
     }
