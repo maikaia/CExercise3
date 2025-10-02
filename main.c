@@ -1,11 +1,11 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <time.h>
-#include "types.h" 
-#include <string.h>    // Windows (_stricmp)
-#include "file.h"      // load/save registry
+#include <stdio.h>      // printf, FILE, fopen, fclose, fgets, fprintf
+#include <string.h>     // strcmp, strncpy, strtok, strcspn
+#include <ctype.h>      // isalpha, isdigit
+#include <stdlib.h>     // atoi, qsort, bsearch, rand, srand
+#include <time.h>       // time
+#include "types.h"      // vehicle_t, person_t
+#include <string.h>     // Windows (_stricmp)
+#include "file.h"       // load/save registry
 
 #ifdef _WIN32
     #define strcasecmp _stricmp

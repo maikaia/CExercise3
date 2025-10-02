@@ -8,6 +8,7 @@ static void strip_newline(char *s) {
     s[strcspn(s, "\n")] = '\0';
 }
 
+// load/save registry from/to file
 int load_registry(const char *filename, vehicle_t registry[], int *count) {
     FILE *f = fopen(filename, "r");
     if (!f) {
@@ -15,6 +16,7 @@ int load_registry(const char *filename, vehicle_t registry[], int *count) {
         return 0;
     }
 
+    // read first line (count) and then each vehicle line
     char buf[SIZE];
     if (!fgets(buf, sizeof(buf), f)) {
         fclose(f);
@@ -22,9 +24,11 @@ int load_registry(const char *filename, vehicle_t registry[], int *count) {
         return 0;
     }
 
+    // parse count
     *count = atoi(buf); // first line = count
     if (*count > LIST_SIZE) *count = LIST_SIZE;
 
+    // read each vehicle line
     for (int i = 0; i < *count; i++) {
         if (!fgets(buf, sizeof(buf), f)) break;
         strip_newline(buf);
@@ -36,6 +40,7 @@ int load_registry(const char *filename, vehicle_t registry[], int *count) {
         char *owner = strtok(NULL, "|");
         char *age_s = strtok(NULL, "|");
 
+        // populate vehicle if all fields present
         if (brand && type && plate && owner && age_s) {
             strncpy(registry[i].brand, brand, SIZE-1);
             strncpy(registry[i].type, type, SIZE-1);
@@ -49,10 +54,12 @@ int load_registry(const char *filename, vehicle_t registry[], int *count) {
     return 0;
 }
 
+// save registry to file
 int save_registry(const char *filename, const vehicle_t registry[], int count) {
     FILE *f = fopen(filename, "w");
     if (!f) return -1;
 
+    // write count and each vehicle line
     fprintf(f, "%d\n", count);
     for (int i = 0; i < count; i++) {
         fprintf(f, "%s|%s|%s|%s|%d\n",
