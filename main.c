@@ -5,7 +5,7 @@
 #include <time.h>
 #include "types.h" 
 #include <string.h>    // Windows (_stricmp)
-#include "file.h" // load/save registry
+#include "file.h"      // load/save registry
 
 #ifdef _WIN32
     #define strcasecmp _stricmp
@@ -13,6 +13,7 @@
 
 // Functions
 
+//The menu shown to user
 void print_menu()
 {
     printf("-----------------------------\n");
@@ -27,14 +28,17 @@ void print_menu()
     printf("-----------------------------\n");
 }
 
+// Safe string input
 void input_string(const char *prompt, char *dest, size_t size){
     printf("%s", prompt);
     fgets(dest, size, stdin);
     strtok(dest, "\n");
 }
 
+// Adds one vehicle to the registry
 void add_vehicle(vehicle_t registry[], int *count)
 {
+    // Check if registry is full
     if(*count >= LIST_SIZE){
         printf("Registry is full\n");
     } else {
@@ -66,7 +70,7 @@ void remove_vehicle(vehicle_t registry[], int *count){
     }
 
     char buffer[SIZE];
-
+    
     printf("Enter a number between 1-%i to remove that vehicle\n", *count);
     fgets(buffer, SIZE, stdin);
     int input = atoi(buffer);
@@ -87,7 +91,7 @@ void remove_vehicle(vehicle_t registry[], int *count){
     save_registry("registry.txt", registry, *count);
 }
 
-// Compares 
+// Comparison function for qsort and bsearch
 int compare_by_owner(const void *a, const void *b) {
     const vehicle_t *va = (const vehicle_t *)a;
     const vehicle_t *vb = (const vehicle_t *)b;
@@ -107,16 +111,19 @@ void sort_registry(vehicle_t registry[], int count){
     save_registry("registry.txt", registry, count);
 }
 
+// Adds a random vehicle to the registry
 void add_random_vehicle(vehicle_t registry[], int *count){
     if(*count >= LIST_SIZE){
         printf("Registry is full\n");
         return;
     }
 
+    // Some example data to choose from
     const char *brand[] = {"BMW", "Audi", "Peugeot", "Kia", "Nissan", "Mercedes", "Toyota", "Ford", "Fiat", "Porsche"};
     const char *type[] = {"SUV", "Sedan", "Pickup truck", "Convertible", "Hatchback", "Coupe", "Minivan", "Crossover", "Luxury", "Limousine"};
     const char *name[] = {"Nils-Olov Olsson", "Samuel Grafström", "Carl Nordenadler", "Niklas Sköld", "Edward Bergström", "Theodor Fahami", "Johannes Schoeneck", "Ingela Hedlund", "Jörgen Olsson", "Petra Olsson"};
 
+    // Randomly generate a vehicle
     snprintf(registry[*count].brand, SIZE, "%s", brand[rand() % 10]);
     snprintf(registry[*count].type, SIZE, "%s", type[rand() % 10]);
     snprintf(registry[*count].license_plate, SIZE, "%c%c%c%03d", 'A' + (rand()%26), 'A' + (rand()%26), 'A' + (rand()%26), rand() % 1000);
@@ -128,6 +135,7 @@ void add_random_vehicle(vehicle_t registry[], int *count){
     save_registry("registry.txt", registry, *count);
 }
 
+// Search for a vehicle by owner name
 void search_owner(vehicle_t registry[], int count) {
     char query[SIZE];
     input_string("Enter owner name to search: ", query, SIZE);
@@ -173,7 +181,7 @@ void show_all(vehicle_t registry[], int count)
     }
 }
 
-// Safe input
+// Handles user input and converts to int, returns -1 on invalid input
 int handle_user_input()
 {
     char buffer[SIZE];
@@ -209,6 +217,7 @@ void info(vehicle_t registry[], int count)
     }
 }
 
+// Acts upon user input
 void act_upon_input(int choice, vehicle_t registry[], int *count)
 {
     switch(choice)
@@ -225,8 +234,7 @@ void act_upon_input(int choice, vehicle_t registry[], int *count)
     }
 }
 
-// Main
-
+// Main function
 int main()
 {
     vehicle_t registry[LIST_SIZE]; //storage of registry
