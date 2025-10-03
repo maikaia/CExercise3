@@ -52,7 +52,13 @@ void add_vehicle(vehicle_t registry[], int *count)
         printf("Enter owners age: ");
         fgets(buffer, SIZE, stdin); 
         strtok(buffer, "\n");
-        registry[*count].owner.age = atoi(buffer);
+        // Validate age input
+        if(!isdigit((unsigned char) buffer[0])){
+            printf("Invalid age input, setting age to 0\n");
+            registry[*count].owner.age = 0;
+        } else {
+            registry[*count].owner.age = atoi(buffer);
+        }
 
         (*count)++;
         printf("Vehicle added!\n");
@@ -121,7 +127,7 @@ void add_random_vehicle(vehicle_t registry[], int *count){
     // Some example data to choose from
     const char *brand[] = {"BMW", "Audi", "Peugeot", "Kia", "Nissan", "Mercedes", "Toyota", "Ford", "Fiat", "Porsche"};
     const char *type[] = {"SUV", "Sedan", "Pickup truck", "Convertible", "Hatchback", "Coupe", "Minivan", "Crossover", "Luxury", "Limousine"};
-    const char *name[] = {"Nils-Olov Olsson", "Samuel Grafström", "Carl Nordenadler", "Niklas Sköld", "Edward Bergström", "Theodor Fahami", "Johannes Schoeneck", "Ingela Hedlund", "Jörgen Olsson", "Petra Olsson"};
+    const char *name[] = {"Nils-Olov Olsson", "Samuel Grafstrom", "Carl Nordenadler", "Niklas Skold", "Edward Bergstrom", "Theodor Fahami", "Johannes Schoeneck", "Ingela Hedlund", "Jorgen Olsson", "Petra Olsson"};
 
     // Randomly generate a vehicle
     snprintf(registry[*count].brand, SIZE, "%s", brand[rand() % 10]);
