@@ -1,9 +1,9 @@
 8
-Toyota|Minivan|QVY586|Carl Nordenadler|69
-Audi|SUV|NED550|Carl Nordenadler|69
-Kia|Minivan|ZHO757|Niklas Skold|68
-BMW|Limousine|OIO006|Nils-Olov Olsson|62
-Porsche|Pickup truck|EWZ999|Petra Olsson|25
-Porsche|Limousine|SNH961|Samuel Grafstrom|32
-Nissan|SUV|KWR517|Samuel Grafstrom|21
-Toyota|Limousine|ZLU761|Theodor Fahami|76
+Porsche|Pickup truck|RWR408|Edward Bergstrom|27
+Nissan|SUV|WUD287|Ingela Hedlund|80
+Mercedes|Luxury|UCJ905|Ingela Hedlund|65
+Kia|SUV|SIU139|Jorgen Olsson|35
+Fiat|Sedan|VAB095|Niklas Skold|35
+Fiat|Pickup truck|WBQ020|Nils-Olov Olsson|47
+Fiat|Luxury|TKL537|Petra Olsson|30
+Kia|SUV|LXM239|Samuel Grafstrom|32

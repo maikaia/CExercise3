@@ -28,11 +28,59 @@ void print_menu()
     printf("-----------------------------\n");
 }
 
-// Safe string input
-void input_string(const char *prompt, char *dest, size_t size){
+// Sanitize input string by removing unwanted characters
+void sanitize_string(char *s) {
+    char clean[SIZE];
+    int j = 0;
+
+    for (int i = 0; s[i] != '\0' && j < SIZE - 1; i++) {
+        unsigned char c = s[i];
+
+        // Skip control characters entirely (\n, \r, \t, etc.)
+        if (iscntrl(c)) continue;
+
+        // Skip backslashes (don't allow '\')
+        if (c == '\\') continue;
+
+        // Allow safe characters
+        if (isalnum(c) || isspace(c) || c == '-' || c == '_' || c == '.' || c == ',') {
+            clean[j++] = c;
+        } else {
+            // Replace all other symbols with '_'
+            clean[j++] = '_';
+        }
+    }
+
+    clean[j] = '\0';
+
+    // Trim trailing whitespace
+    int len = strlen(clean);
+    while (len > 0 && isspace((unsigned char)clean[len - 1])) {
+        clean[--len] = '\0';
+    }
+
+    strcpy(s, clean);
+}
+
+// Input string with prompt and sanitize
+void input_string(const char *prompt, char *dest, size_t size) {
     printf("%s", prompt);
-    fgets(dest, size, stdin);
-    strtok(dest, "\n");
+    if (fgets(dest, size, stdin)) {
+        strtok(dest, "\n"); // remove newline
+        sanitize_string(dest); // remove unwanted characters
+    }
+}
+
+// Input string with prompt and ensure non-empty
+void safe_input_string(const char *prompt, char *dest, size_t size){
+    while(1){
+        input_string(prompt, dest, size);
+        if(strlen(dest) == 0){
+            printf("Input cannot be empty, try again.\n");
+        } else {
+            break;
+        }
+    }
 }
 
 // Adds one vehicle to the registry
@@ -43,22 +91,41 @@ void add_vehicle(vehicle_t registry[], int *count)
         printf("Registry is full\n");
     } else {
         char buffer[SIZE];
+        int invalid = 0;
 
-        input_string("Enter brand: ", registry[*count].brand, SIZE);
-        input_string("Enter type: ", registry[*count].type, SIZE);
-        input_string("Enter license number: ", registry[*count].license_plate, SIZE);
-        input_string("Enter owners name: ", registry[*count].owner.name, SIZE);
+        do{
+            printf("Enter vehicle details:\n");
+            input_string("Enter brand: ", registry[*count].brand, SIZE);
+            input_string("Enter type: ", registry[*count].type, SIZE);
+            input_string("Enter license number: ", registry[*count].license_plate, SIZE);
+            input_string("Enter owners name: ", registry[*count].owner.name, SIZE);
 
-        printf("Enter owners age: ");
-        fgets(buffer, SIZE, stdin); 
-        strtok(buffer, "\n");
-        // Validate age input
-        if(!isdigit((unsigned char) buffer[0])){
-            printf("Invalid age input, setting age to 0\n");
-            registry[*count].owner.age = 0;
-        } else {
-            registry[*count].owner.age = atoi(buffer);
-        }
+            printf("Enter owners age: ");
+            fgets(buffer, SIZE, stdin);
+            strtok(buffer, "\n");
+
+            // Validate age input (should be a number between 18 and 100)
+            if(!isdigit((unsigned char) buffer[0]) || atoi(buffer) < 18 || atoi(buffer) > 100){
+                registry[*count].owner.age = 0;
+                printf("Invalid age input. Age must be a number between 18 and 100.\n");
+            } else {
+                registry[*count].owner.age = atoi(buffer);
+            }
+
+            // Determine if any field is invalid (empty text fields or invalid age)
+            invalid = (strlen(registry[*count].brand) == 0) ||
+                      (strlen(registry[*count].type) == 0) ||
+                      (strlen(registry[*count].license_plate) == 0) ||
+                      (strlen(registry[*count].owner.name) == 0) ||
+                      (registry[*count].owner.age == 0);
+
+            // If invalid, inform the user and repeat the input process
+            if (invalid) {
+                printf("One or more inputs were invalid. All text fields must be non-empty and owner's age must be a number between 18 and 100.\n");
+                printf("Please re-enter the details. The prompt will repeat until all fields are valid.\n");
+            }
+        } while (invalid);
+
 
         (*count)++;
         printf("Vehicle added!\n");
@@ -105,16 +172,23 @@ int compare_by_owner(const void *a, const void *b) {
 }
 
 // Sort the registry by owner name
-void sort_registry(vehicle_t registry[], int count){
-    if(count <= 1){
-        printf("List is to small to sort\n");
+void sort_registry(vehicle_t registry[], int count) {
+    if (count <= 1) {
+        printf("List is too small to sort\n");
         return;
     }
 
-    qsort(registry, count, sizeof(vehicle_t), compare_by_owner);
-    printf("Registry sorted by owner!\n");
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (strcasecmp(registry[j].owner.name, registry[j+1].owner.name) > 0) {
+                vehicle_t temp = registry[j];
+                registry[j] = registry[j+1];
+                registry[j+1] = temp;
+            }
+        }
+    }
 
-    save_registry("registry.txt", registry, count);
+    printf("Registry sorted by owner!\n");
 }
 
 // Adds a random vehicle to the registry
@@ -141,33 +215,46 @@ void add_random_vehicle(vehicle_t registry[], int *count){
     save_registry("registry.txt", registry, *count);
 }
 
+int binary_search_owner(vehicle_t registry[], int count, const char *query) {
+    int left = 0, right = count - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int cmp = strcasecmp(query, registry[mid].owner.name);
+
+        if (cmp == 0) {
+            return mid;     // found exact match
+        } else if (cmp < 0) {
+            right = mid - 1;    // search left
+        } else {
+            left = mid + 1;     // search right
+        }
+    }
+    return -1; // not found
+}
+
 // Search for a vehicle by owner name
 void search_owner(vehicle_t registry[], int count) {
     char query[SIZE];
-    input_string("Enter owner name to search: ", query, SIZE);
+    safe_input_string("Enter owner name to search: ", query, SIZE);
 
-    // Make sure registry is sorted before binary search
-    sort_registry(registry, count);
+    // Ensure the list is sorted before searching
+    sort_registry(registry, count); 
 
-    // Binary search using bsearch
-    vehicle_t key;
-    snprintf(key.owner.name, SIZE, "%s", query);
-
-    vehicle_t *result = bsearch(&key, registry, count, sizeof(vehicle_t), compare_by_owner);
-
-    if (result != NULL) {
-        printf("Found: %s | %s | %s | %s | %i\n",
-            result->brand,
-            result->type,
-            result->license_plate,
-            result->owner.name,
-            result->owner.age
+    int pos = binary_search_owner(registry, count, query);
+    if (pos >= 0) {
+        printf("%i. %s | %s | %s | %s | %i\n",
+            pos+1,
+            registry[pos].brand,
+            registry[pos].type,
+            registry[pos].license_plate,
+            registry[pos].owner.name,
+            registry[pos].owner.age
         );
     } else {
-        printf("No vehicle found for owner '%s'\n", query);
+        printf("No vehicles found for owner '%s'\n", query);
     }
 }
-
 
 // Shows the whole registry
 void show_all(vehicle_t registry[], int count)
